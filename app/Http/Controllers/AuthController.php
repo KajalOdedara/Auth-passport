@@ -15,9 +15,9 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:3',
             'c_password' => 'required|same:password',
         ]);
@@ -31,8 +31,6 @@ class AuthController extends Controller
         $success['token'] =  $user->createToken('myapp')->accessToken;
         return response()->json(['success' => $success], $this->successStatus);
     }
-
-
     public function login()
     {
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
@@ -50,6 +48,5 @@ class AuthController extends Controller
         // dd($user);
         return response()->json(['success' => $user], $this->successStatus);
         return response()->json(['get user successfully']);
-
     }
 }
