@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -29,12 +30,18 @@ class AuthController extends Controller
 
         $user = User::create($input);
         $success['token'] =  $user->createToken('myapp')->accessToken;
+        $success['name'] = $user->name;
+        $success['email'] = $user->email;
+
         return response()->json(['success' => $success], $this->successStatus);
     }
     public function login()
     {
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
+            $success['msg'] = 'login user';
+            $success['name'] = $user->name;
+            $success['email'] = $user->email;
             $success['token'] =  $user->createToken('myapp')->accessToken;
             return response()->json(['success' => $success], $this->successStatus);
         } else {
@@ -42,7 +49,7 @@ class AuthController extends Controller
         }
     }
 
-    public function getUser()
+    public function getUser(Request $request)
     {
         $user = Auth::user();
         // dd($user);
